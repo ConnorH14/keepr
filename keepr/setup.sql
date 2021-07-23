@@ -1,0 +1,46 @@
+
+CREATE TABLE IF NOT EXISTS keeps(
+  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT 'keep primary key',
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'created',
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'updated',
+  creatorId VARCHAR(255) COMMENT 'FK: account',
+  name VARCHAR(255) NOT NULL COMMENT 'keep name',
+  description VARCHAR(255) COMMENT 'keep description',
+  img VARCHAR(255) NOT NULL COMMENT 'keep image',
+  views INT NOT NULL COMMENT 'keep views',
+  shares INT COMMENT 'keep shares',
+  keeps INT NOT NULL COMMENT 'keeps',
+  FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE
+)default charset utf8;
+
+CREATE TABLE IF NOT EXISTS vaults(
+  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT 'keep primary key',
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'created',
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'updated',
+  creatorId VARCHAR(255) NOT NULL COMMENT 'FK: account',
+  name VARCHAR(255) NOT NULL COMMENT 'vault name',
+  description VARCHAR(255) COMMENT 'vault description',
+  isPrivate TINYINT NOT NULL COMMENT 'vault private',
+  FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE
+)default charset utf8;
+
+CREATE TABLE IF NOT EXISTS profiles(
+  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT 'keep primary key',
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'created',
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'updated',
+  name VARCHAR(255) NOT NULL COMMENT 'profile name',
+  email VARCHAR(255) NOT NULL COMMENT 'profile email',
+  picture VARCHAR(255) NOT NULL COMMENT 'profile picture'
+)default charset utf8;
+
+CREATE TABLE IF NOT EXISTS vault_keeps(
+  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT 'keep primary key',
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'created',
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'updated',
+  creatorId VARCHAR(255) COMMENT 'FK: account',
+  vaultId INT NOT NULL COMMENT 'FK: vault',
+  keepId INT NOT NULL COMMENT 'FK: keep',
+  FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE,
+  FOREIGN KEY (vaultId) REFERENCES vaults(id) ON DELETE CASCADE,
+  FOREIGN KEY (keepId) REFERENCES keeps(id) ON DELETE CASCADE
+)default charset utf8;
