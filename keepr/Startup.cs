@@ -43,6 +43,9 @@ namespace keepr
             services.AddScoped<AccountsRepository>();
             services.AddScoped<AccountService>();
 
+            services.AddTransient<ProfilesRepository>();
+            services.AddTransient<ProfilesService>();
+
             services.AddTransient<KeepsRepository>();
             services.AddTransient<KeepsService>();
 
