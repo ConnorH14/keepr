@@ -26,7 +26,7 @@ namespace keepr.Repositories
       ).ToList();
     }
 
-    internal Vault GetVaultById(int id)
+    public Vault GetVaultById(int id)
     {
       string sql = $"SELECT v.*, a.* FROM vaults v JOIN accounts a ON v.creatorId = a.id WHERE v.Id = @id;";
       Vault vault = _db.Query<Vault, Profile, Vault>(sql, (v, p) =>
@@ -59,6 +59,7 @@ namespace keepr.Repositories
       }, new { id }).FirstOrDefault();
     }
 
+
     public Vault EditVault(Vault vaultData)
     {
       string sql = @"
@@ -81,10 +82,34 @@ namespace keepr.Repositories
       return vaultData;
     }
 
-    internal void DeleteVault(int id)
+    public void DeleteVault(int id)
     {
       string sql = "DELETE FROM vaults WHERE id = @id LIMIT 1;";
       _db.Execute(sql, new { id });
+    }
+
+    public List<Vault> GetVaultsByUser(string searchedId, string userId)
+    {
+      if (searchedId == userId)
+      {
+        string sql = "SELECT v.*, a.* FROM vaults v JOIN accounts a ON v.creatorId = a.id WHERE @searchedId = creatorId;";
+        return _db.Query<Vault, Profile, Vault>(sql, (v, p) =>
+        {
+          v.Creator = p;
+          return v;
+        }, new { searchedId }, splitOn: "id"
+        ).ToList();
+      }
+      else
+      {
+        string sql = "SELECT v.*, a.* FROM vaults v JOIN accounts a ON v.creatorId = a.id WHERE @searchedId = creatorId AND isPrivate = 0;";
+        return _db.Query<Vault, Profile, Vault>(sql, (v, p) =>
+        {
+          v.Creator = p;
+          return v;
+        }, new { searchedId }, splitOn: "id"
+        ).ToList();
+      }
     }
   }
 }

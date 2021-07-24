@@ -59,5 +59,10 @@ namespace keepr.Services
       }
       _kr.DeleteKeep(keep.Id);
     }
+
+    internal List<Keep> GetKeepsByUser(string id)
+    {
+      return _kr.GetKeepsByUser(id);
+    }
   }
 }

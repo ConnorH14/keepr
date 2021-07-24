@@ -61,5 +61,10 @@ namespace keepr.Services
       }
       _vr.DeleteVault(vault.Id);
     }
+
+    internal List<Vault> GetVaultsByUser(string searchedId, string userId)
+    {
+      return _vr.GetVaultsByUser(searchedId, userId);
+    }
   }
 }

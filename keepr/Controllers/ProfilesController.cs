@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CodeWorks.Auth0Provider;
 using keepr.Models;
@@ -12,10 +13,14 @@ namespace keepr.Controllers
   public class ProfilesController : ControllerBase
   {
     private readonly ProfilesService _ps;
+    private readonly KeepsService _ks;
+    private readonly VaultsService _vs;
 
-    public ProfilesController(ProfilesService ps)
+    public ProfilesController(ProfilesService ps, KeepsService ks, VaultsService vs)
     {
       _ps = ps;
+      _ks = ks;
+      _vs = vs;
     }
 
     [HttpGet("{id}")]
@@ -49,11 +54,12 @@ namespace keepr.Controllers
     }
 
     [HttpGet("{id}/keeps")]
-    public ActionResult<Profile> GetKeeps(string id)
+    public ActionResult<List<Keep>> GetKeeps(string id)
     {
       try
       {
-        // TODO get keeps by profile
+        List<Keep> k = _ks.GetKeepsByUser(id);
+        return Ok(k);
       }
       catch (System.Exception e)
       {
@@ -62,11 +68,20 @@ namespace keepr.Controllers
     }
 
     [HttpGet("{id}/vaults")]
-    public ActionResult<Profile> GetVaults(string id)
+    public async Task<ActionResult<List<Profile>>> GetVaults(string id)
     {
       try
       {
-        // TODO get vaults by profile
+        if (User.Identity.IsAuthenticated == true) {
+          Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
+          List<Vault> v = _vs.GetVaultsByUser(id, userInfo.Id);
+          return Ok(v);
+        }
+        else
+        {
+          List<Vault> v = _vs.GetVaultsByUser(id, "null");
+          return Ok(v);
+        }
       }
       catch (System.Exception e)
       {

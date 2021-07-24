@@ -88,5 +88,16 @@ namespace keepr.Repositories
       string sql = "DELETE FROM keeps WHERE id = @id LIMIT 1;";
       _db.Execute(sql, new { id });
     }
+
+    internal List<Keep> GetKeepsByUser(string userId)
+    {
+      string sql = "SELECT k.*, a.* FROM keeps k JOIN accounts a ON k.creatorId = a.id WHERE @userId = creatorId;";
+      return _db.Query<Keep, Profile, Keep>(sql, (k, p) =>
+      {
+        k.Creator = p;
+        return k;
+      }, new { userId }, splitOn: "id"
+      ).ToList();
+    }
   }
 }
