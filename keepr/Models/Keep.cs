@@ -12,4 +12,11 @@ namespace keepr.Models
     public int Keeps { get; set; } = 0;
     public Profile Creator { get; set; }
   }
+
+  
+  public class VaultKeepView : Keep
+  {
+    public int VaultKeepId { get; set; }
+    public bool IsPrivate { get; set; }
+  }
 }

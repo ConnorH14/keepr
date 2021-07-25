@@ -28,7 +28,7 @@ namespace keepr.Repositories
 
     public Keep GetKeepById(int id)
     {
-      string sql = $"SELECT k.*, a.* FROM keeps k JOIN accounts a ON k.creatorId = a.id WHERE k.Id = @id;";
+      string sql = "SELECT k.*, a.* FROM keeps k JOIN accounts a ON k.creatorId = a.id WHERE k.Id = @id;";
       Keep keep = _db.Query<Keep, Profile, Keep>(sql, (k, p) =>
       {
         k.Creator = p;
