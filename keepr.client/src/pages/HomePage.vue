@@ -5,7 +5,7 @@
     <div class="row mt-3 d-flex justify-content-around">
       <div class="col-12 text-center mt-5">
         <h1 class="title-text title-header">
-          Welcome to website name.
+          Welcome to [keeps && vaults].
         </h1>
       </div>
     </div>

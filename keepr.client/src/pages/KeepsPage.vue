@@ -9,19 +9,24 @@
     </div>
     <div class="row">
       <div class="text-center m-5 mx-auto load-button">
-        <h2>Load More</h2>
+        <h2 @click="loadKeeps">
+          Load More
+        </h2>
       </div>
     </div>
   </div>
+  <Loader />
 </template>
 
 <script>
-import { computed, watchEffect } from '@vue/runtime-core'
+import { computed, onMounted } from '@vue/runtime-core'
 import { keepsService } from '../services/KeepsService'
 import { AppState } from '../AppState'
+import Loader from '../components/Loader.vue'
 export default {
+  components: { Loader },
   setup() {
-    watchEffect(async() => {
+    onMounted(async() => {
       try {
         await keepsService.getAllKeeps()
       } catch (error) {
@@ -29,7 +34,10 @@ export default {
       }
     })
     return {
-      keeps: computed(() => AppState.activeKeeps)
+      keeps: computed(() => AppState.activeKeeps),
+      loadKeeps() {
+        keepsService.loadKeeps()
+      }
     }
   }
 
@@ -43,6 +51,8 @@ export default {
   width: -moz-fit-content;
   padding: 10px;
   font-family: 'Secular One', sans-serif;
+  cursor: pointer;
+  animation: card-show 6s ease-out;
 }
 
 </style>
