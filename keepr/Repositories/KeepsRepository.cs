@@ -38,6 +38,9 @@ namespace keepr.Repositories
       {
         throw new Exception("Bad ID");
       }
+      keep.Views++;
+      sql = "UPDATE keeps SET views = @Views WHERE id = @Id;";
+      int rowsAffected = _db.Execute(sql, keep);
       return keep;
     }
 

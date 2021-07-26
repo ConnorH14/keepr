@@ -43,9 +43,7 @@ namespace keepr.Services
       keep.Name = keepData.Name ?? keep.Name;
       keep.Description = keepData.Description ?? keep.Description;
       keep.Img = keepData.Img ?? keep.Img;
-      if (keep.Views == 0){keep.Views = keepData.Views;}
       if (keep.Shares == 0){keep.Shares = keepData.Shares;}
-      if (keep.Keeps == 0){keep.Keeps = keepData.Keeps;}
 
       return _kr.EditKeep(keep);
     }

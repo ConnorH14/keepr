@@ -12,11 +12,13 @@ namespace keepr.Repositories
   {
     private readonly IDbConnection _db;
     private readonly VaultsService _vs;
+    private readonly KeepsService _ks;
 
-    public VaultKeepsRepository(IDbConnection db, VaultsService vs)
+    public VaultKeepsRepository(IDbConnection db, VaultsService vs, KeepsService ks)
     {
       _db = db;
       _vs = vs;
+      _ks = ks;
     }
 
     public List<VaultKeepView> GetVaultKeeps(int id, string userId)
@@ -63,7 +65,12 @@ namespace keepr.Repositories
         int id = _db.ExecuteScalar<int>(sql, vkData);
         vkData.Id = id;
         sql = $"SELECT * FROM vault_keeps WHERE id = {id};";
-        return _db.Query<VaultKeep>(sql, new { id }).FirstOrDefault();
+        VaultKeep vk = _db.Query<VaultKeep>(sql, new { id }).FirstOrDefault();
+        Keep keep = _ks.GetKeepById(vk.KeepId);
+        keep.Keeps++;
+        sql = $"UPDATE keeps SET keeps = @Keeps WHERE id = {vk.KeepId};";
+        int rowsAffected = _db.Execute(sql, keep);
+        return vk;
       }
       else
       {
@@ -79,6 +86,11 @@ namespace keepr.Repositories
       {
         sql = "DELETE FROM vault_keeps WHERE id = @vkId LIMIT 1;";
         _db.Execute(sql, new { vkId });
+
+        Keep keep = _ks.GetKeepById(vk.KeepId);
+        keep.Keeps--;
+        sql = $"UPDATE keeps SET keeps = @Keeps WHERE id = {vk.KeepId};";
+        int rowsAffected = _db.Execute(sql, keep);
         return vk;
       }
       else
