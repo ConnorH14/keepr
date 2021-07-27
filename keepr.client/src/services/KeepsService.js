@@ -23,6 +23,10 @@ class KeepsService {
       }
     }
   }
+
+  async selectKeep(id) {
+    await api.get('api/keeps/' + id)
+  }
 }
 
 export const keepsService = new KeepsService()

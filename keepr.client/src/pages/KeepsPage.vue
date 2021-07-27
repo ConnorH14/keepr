@@ -16,6 +16,7 @@
     </div>
   </div>
   <Loader />
+  <KeepModal v-for="keep in keeps" :key="keep.id" :keep="keep" />
 </template>
 
 <script>

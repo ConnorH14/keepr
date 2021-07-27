@@ -1,19 +1,29 @@
 <template>
-  <div class="keep-card" data-toggle="modal" :data-target="'#m'+keep.id">
+  <div class="keep-card" data-toggle="modal" :data-target="'#m' + keep.id" @click="selectKeep(keep.id)">
     <img :src="keep.img" :alt="keep.name">
     <div class="keep-title-div">
       <h1 class="keep-title">
-        {{ keep.name }}
+        {{ keep.name }} {{ keep.id }}
       </h1>
       <img :src="keep.creator.picture" :alt="keep.name" class="keep-creator-picture">
     </div>
   </div>
-  <!-- <KeepModal :keep="keep" /> -->
 </template>
-
 <script>
+import { keepsService } from '../services/KeepsService'
 export default {
-  props: { keep: { type: Object, required: true } }
+  props: { keep: { type: Object, required: true } },
+  setup() {
+    return {
+      async selectKeep(id) {
+        try {
+          await keepsService.selectKeep(id)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
 }
 </script>
 
