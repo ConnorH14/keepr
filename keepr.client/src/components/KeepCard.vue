@@ -3,7 +3,7 @@
     <img :src="keep.img" :alt="keep.name">
     <div class="keep-title-div">
       <h1 class="keep-title">
-        {{ keep.name }} {{ keep.id }}
+        {{ keep.name }}
       </h1>
       <img :src="keep.creator.picture" :alt="keep.name" class="keep-creator-picture">
     </div>

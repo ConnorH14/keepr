@@ -27,6 +27,24 @@ class KeepsService {
   async selectKeep(id) {
     await api.get('api/keeps/' + id)
   }
+
+  async createKeep(id, keepData) {
+    await api.post('api/keeps', keepData)
+    const keeps = await api.get(`api/profiles/${id}/keeps`)
+    AppState.activeProfile.keeps = keeps.data
+  }
+
+  async deleteKeep(id) {
+    await api.delete('api/keeps/' + id)
+    AppState.activeKeeps = AppState.activeKeeps.filter(k => k.id !== id)
+    AppState.activeProfile.keeps = AppState.activeProfile.keeps.filter(k => k.id !== id)
+    AppState.activeVault.keeps = AppState.activeVault.keeps.filter(k => k.id !== id)
+  }
+
+  async addKeepToVault(kid, vid) {
+    const vaultKeep = { keepId: kid, vaultId: vid }
+    await api.post('api/vaultkeeps', vaultKeep)
+  }
 }
 
 export const keepsService = new KeepsService()

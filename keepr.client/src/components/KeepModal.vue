@@ -17,6 +17,10 @@
               </div>
               <div class="col-md-6">
                 <small class="modal-exit-desk" title="exit" data-dismiss="modal"><i class="mdi mdi-exit-to-app"></i></small>
+                <span @click="goToAccount(keep.creator.id)" role="button" data-dismiss="modal">
+                  <img :src="keep.creator.picture" alt="profile picture" class="img-fluid rounded-circle" width="50">
+                  {{ keep.creator.name }}
+                </span>
                 <h1 class="text-center mt-4">
                   {{ keep.name }}
                 </h1>
@@ -40,19 +44,13 @@
                       Add to vault.
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <a class="dropdown-item" href="#">Something else here</a>
+                      <a v-for="vault in accountVaults" :key="vault.id" class="dropdown-item" @click="addKeeptoVault(keep.id, vault.id)">{{ vault.name }}</a>
                     </div>
                   </div>
                   <br>
-                  <div class="text-right mt-5">
-                    <span>
-                      <img :src="keep.creator.picture" alt="profile picture" class="img-fluid rounded-circle" width="50">
-                      {{ keep.creator.name }}
-                    </span>
+                  <div class="text-right mt-3">
                   </div>
-                  <span class="mdi mdi-delete-circle delete-icon" title="delete"></span>
+                  <span v-if="account.id == keep.creator.id" class="mdi mdi-delete-circle delete-icon" title="delete" @click="deleteKeep(keep.id)"></span>
                 </div>
               </div>
             </div>
@@ -64,8 +62,41 @@
 </template>
 
 <script>
+import { computed } from '@vue/runtime-core'
+import { useRouter } from 'vue-router'
+import { AppState } from '../AppState'
+import { keepsService } from '../services/KeepsService'
+import $ from 'jquery'
 export default {
-  props: { keep: { type: Object, required: true } }
+  props: { keep: { type: Object, required: true } },
+  setup() {
+    const router = useRouter()
+    return {
+      accountVaults: computed(() => AppState.accountVaults),
+      account: computed(() => AppState.account),
+      goToAccount(accountId) {
+        router.push({ name: 'Account', params: { id: accountId } })
+      },
+      async deleteKeep(id) {
+        try {
+          if (confirm('Are you sure you want to delete this keep?')) {
+            $('#m' + id).modal('hide')
+            await keepsService.deleteKeep(id)
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      async addKeeptoVault(kid, vid) {
+        try {
+          await keepsService.addKeepToVault(kid, vid)
+          $('#m' + kid).modal('hide')
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+  }
 }
 </script>
 
@@ -77,7 +108,7 @@ export default {
   position: absolute;
   top: 5px;
   right: 5px;
-  font-size: 1em;
+  font-size: 2em;
 }
 .modal-exit-desk:hover {
   color: #d42929;

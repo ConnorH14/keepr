@@ -49,8 +49,8 @@ export default {
         router.push({ name: 'Keeps' })
       },
       async createClick() {
-        if (AppState.account) {
-          router.push({ name: 'Account' })
+        if (AppState.account.id) {
+          router.push({ name: 'Account', params: { id: AppState.account.id } })
         } else {
           AuthService.loginWithRedirect()
         }
